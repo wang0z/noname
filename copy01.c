@@ -1,32 +1,29 @@
-/*
- * This function allocates an e2fsck context
- */
-errcode_t e2fsck_allocate_context(e2fsck_t *ret)
+ecd_t tck_allocate_ctx(tck_t *ret)
 {
-	e2fsck_t	context;
-	errcode_t	retval;
+	tck_t	ctx;
+	ecd_t	retval;
 	char		*time_env;
 
-	retval = ext2fs_get_mem(sizeof(struct e2fsck_struct), &context);
+	retval = xts_get_mem(sizeof(struct tck_struct), &ctx);
 	if (retval)
 		return retval;
 
-	memset(context, 0, sizeof(struct e2fsck_struct));
+	memset(ctx, 0, sizeof(struct tck_struct));
 
-	context->process_inode_size = 256;
-	context->ext_attr_ver = 2;
-	context->blocks_per_page = 1;
-	context->htree_slack_percentage = 255;
+	ctx->process_inode_size = 256;
+	ctx->ext_attr_ver = 2;
+	ctx->blocks_per_page = 1;
+	ctx->htree_slack_percentage = 255;
 
-	time_env = getenv("E2FSCK_TIME");
+	time_env = getenv("TCK_TIME");
 	if (time_env)
-		context->now = (time_t) strtoull(time_env, NULL, 0);
+		ctx->now = (time_t) strtoull(time_env, NULL, 0);
 	else {
-		context->now = time(0);
-		if (context->now < 1262322000) /* January 1 2010 */
-			context->flags |= E2F_FLAG_TIME_INSANE;
+		ctx->now = time(0);
+		if (ctx->now < 1262322000) /* January 1 2010 */
+			ctx->flags |= E2F_FLAG_TIME_INSANE;
 	}
 
-	*ret = context;
+	*ret = ctx;
 	return 0;
 }
