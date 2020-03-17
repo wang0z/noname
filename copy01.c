@@ -1,21 +1,24 @@
-ecd_t tck_allocate_ctx(tck_t *ret)
+/*
+ * This function allocates an e2fsck ctx
+ */
+errcode_t e2fsck_allocate_ctx(e2fsck_t *ret)
 {
-	tck_t	ctx;
-	ecd_t	retval;
+	e2fsck_t	ctx;
+	errcode_t	retval;
 	char		*time_env;
 
-	retval = xts_get_mem(sizeof(struct tck_struct), &ctx);
+	retval = ext2fs_get_mem(sizeof(struct e2fsck_struct), &ctx);
 	if (retval)
 		return retval;
 
-	memset(ctx, 0, sizeof(struct tck_struct));
+	memset(ctx, 0, sizeof(struct e2fsck_struct));
 
 	ctx->process_inode_size = 256;
 	ctx->ext_attr_ver = 2;
 	ctx->blocks_per_page = 1;
 	ctx->htree_slack_percentage = 255;
 
-	time_env = getenv("TCK_TIME");
+	time_env = getenv("E2FSCK_TIME");
 	if (time_env)
 		ctx->now = (time_t) strtoull(time_env, NULL, 0);
 	else {
